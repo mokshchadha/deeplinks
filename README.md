@@ -1,2 +1,2 @@
-# deeplinks_flutter
+# deeplinksflutter
 flutter repo exploring deeplinks
