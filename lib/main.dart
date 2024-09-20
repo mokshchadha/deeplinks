@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
+import 'package:deeplinks/pages/candidate.dart';
+import 'package:deeplinks/pages/home.dart';
+import 'package:deeplinks/pages/unknown.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -34,6 +37,7 @@ class _MyAppState extends State<MyApp> {
     _appLinks = AppLinks();
 
     // Check initial link if app was launched from dead
+    // the link should be of type deeplinks://link/{path to the page}
     final appLink = await _appLinks.getInitialLinkString();
     if (appLink != null) {
       print('getInitialAppLink: $appLink');
@@ -89,122 +93,11 @@ class _MyAppState extends State<MyApp> {
                     CandidatePage(candidateId: candidateId ?? 'Not provided'),
               );
             }
-            // Handle unknown routes
             return MaterialPageRoute(
               builder: (context) => const UnknownRoutePage(),
             );
         }
       },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/candidate',
-                  arguments: '1',
-                );
-              },
-              child: const Text('Go to Candidate Page (Using arguments)'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/candidate/2');
-              },
-              child: const Text('Go to Candidate Page (Using URL)'),
-            ),
-            const SelectableText('''
-            Launch an intent to test deep linking:
-
-            On Android:
-            adb shell am start -a android.intent.action.VIEW -d "deeplinks://candidate/123"
-
-            On iOS Simulator:
-            xcrun simctl openurl booted "deeplinks://candidate/123"
-
-            On macOS, open your browser:
-            deeplinks://candidate/123
-            '''),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class CandidatePage extends StatelessWidget {
-  final String candidateId;
-
-  const CandidatePage({Key? key, required this.candidateId}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Candidate Page'),
-      ),
-      body: Center(
-        child: Text('Candidate ID: $candidateId'),
-      ),
-    );
-  }
-}
-
-class UnknownRoutePage extends StatelessWidget {
-  const UnknownRoutePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('404 - Page Not Found'),
-      ),
-      body: const Center(
-        child: Text('The requested page does not exist.'),
-      ),
     );
   }
 }
